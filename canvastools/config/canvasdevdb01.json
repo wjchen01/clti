@@ -1,0 +1,7 @@
+{
+    "cx":{
+        "user":"REPLACE_WITH_USERNAME",
+        "passwd":"REPLACE_WITH_PASSWORD",
+        "db":"canvasdbdev01.cc.wjchen.org:1527/canvas1d.wjchen.org"
+    }
+}

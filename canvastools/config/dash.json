@@ -1,0 +1,36 @@
+{
+	"title": "Jenkins feed client",
+	"description": "Jenkins feed client",
+	"launch_relative": "/feeds/launch",
+	"icon_relative": "",
+	"oauth_consumer_key": "",
+	"oauth_consumer_secret": "",
+	"devid": "",
+	"devkey": "",
+	"visibility": "admin",
+	"main_route": "",
+	"db_id": 0,
+	"feeds": [
+		"Canvas roster sync",
+		"CANVAS morning feeds",
+		"Canvas evening feeds",
+		"CANVAS enrollment catch up process",
+		"Courseworks morning feed",
+		"Courseworks evening feed",
+		"Courseworks Law School feed",
+		"Courseworks school and department feed",
+		"Courseworks run reports",
+		"Courseworks Vergail",
+		"Courseworks Bookstore feed",
+		"Bedework alumni feeds",
+		"Copy facebook data for courseworks",
+		"Courseworks Sunday restart",
+		"TLA Test"
+		],
+	"builds": [
+		"Sakai_COLUMBIA-trunk",
+		"Bedework_COLUMBIA-test",
+		"Sakai_COLUMBIA-2-9-x-dev",
+		"Sakai_COLUMBIA-2-9-x-test"
+		]
+}

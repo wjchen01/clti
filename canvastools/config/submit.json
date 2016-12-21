@@ -1,0 +1,14 @@
+{
+	"title": "Submit Grades",
+	"description": "Submit grades to SSOL",
+	"launch_relative": "/submit/launch",
+	"icon_relative": "/static/Simpleicons_Business_notebook.svg",
+	"oauth_consumer_key": "",
+	"oauth_consumer_secret": "",
+	"devid": "",
+	"devkey": "",
+        "devkey_installed": "1474311784.525555216",
+	"visibility": "admin",
+	"main_route": "/submit/grades",
+	"db_id": 2
+}

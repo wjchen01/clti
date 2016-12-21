@@ -1,0 +1,9 @@
+{% for build in param.results.builds %}
+{% if not param.builds or loop.index0 < param.builds %}
+{% if build.result %}
+<img src="{{ param.jurl }}{{ param.imageurl }}24x24/{{ build.result|jenkins2color }}.png" />
+{% else %}
+<img src="{{ param.jurl }}{{ param.imageurl }}24x24/red_anime.gif" />
+{% endif %}
+{% endif %}
+{% endfor %}

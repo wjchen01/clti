@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+   // function to convert table on the page into a csv string
+   function getCSV(){  
+     var exportCSV = "";  // csv string
+     var csvTable = document.getElementById("exportTable");
+     var csvname = "{{ csvName }}.csv";
+     var numRows = csvTable.rows.length;
+     for(var i=0;i<numRows;i++){
+          var row = csvTable.rows[i];
+          var numCols = row.cells.length;
+          for(var j=0; j<numCols; j++){
+               exportCSV += row.cells[j].innerHTML;
+               if(j<numCols-1){
+                   exportCSV += ",";
+               }
+          }
+          exportCSV += "\n";
+     }
+     // code to download the csv string created above as a csv file
+     var type = 'text/csv; charset=utf-8';
+     var file = new Blob([exportCSV], {type: type });
+     if (navigator.msSaveBlob) {
+       navigator.msSaveBlob( file, csvname );
+     } else {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(file);
+      document.body.appendChild(a);
+      a.download = csvname;
+      a.click();
+    } document.body.removeChild(a);
+   }
+   
+   $(document).ready(function(){
+    $("#exportButton").click(getCSV);
+       });
+  </script>
+
+</head>
+<body>
+<!-- Top menu bar start-->
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">CourseWorks Audit</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">Logged in as</a></li>
+      <li><a href="#">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+<!--Top menu bar end-->
+
+<!--sidebar start-->
+
+<div class="row">
+	<!--siidebar start-->
+	<div class="col-sm-2">
+		<ul class="list-group">
+  		<a href="/ta" class="list-group-item">Teaching Assistants</a>
+  		<a href="#" class="list-group-item">Second item</a>
+  		<a href="#" class="list-group-item">Third item</a>
+  		<a href="#" class="list-group-item">Fourth item</a>
+		</ul>  
+	</div>
+	<!--sidebar end-->
+
+	<!--main panel start-->
+	<div class="col-sm-10">
+  	<h1>TAs by Department and School</h1>
+        <form name = "inputTA" id="inputTA" action="ta" method="POST">
+		<label>School</label>
+		<select name="school" value="school">
+		    	<option></option>
+		    	<option>ARCH</option>
+		    	<option>BCOL</option>
+  	  	    	<option>CCOL</option>
+			<option>COPS</option>
+			<option>GFAC</option>
+			<option>INTF</option>
+			<option>INTS</option>
+			<option>JTS</option>
+			<option>JULL</option>
+			<option>SART</option>
+			<option>SBUS</option>
+			<option>SDEN</option>
+			<option>SEAS</option>
+			<option>SGEN</option>
+			<option>SGLO</option>
+			<option>SIPA</option>
+			<option>SJRN</option>	
+			<option>SLAW</option>
+			<option>SNUR</option>
+			<option>SPEC</option>
+			<option>SPUB</option>
+			<option>SSOC</option>
+			<option>TCOL</option>
+			<option>UTS</option>
+		 </select>
+		<label>Dept</label>
+		<select name="dept" value="dept">
+		    	<option></option>
+		    	<option>ACCT</option>
+			<option>ACLB</option>
+			<option>ACNT</option>
+			<option>AFSB</option>
+			<option>AFST</option>
+			<option>AHAR</option>
+			<option>AMLP</option>
+			<option>AMSB</option>
+			<option>AMST</option>
+			<option>ANAT</option>
+			<option>ANCB</option>
+			<option>ANES</option>
+			<option>ANTB</option>
+			<option>ANTH</option>
+			<option>APAM</option>
+			<option>ARAF</option>
+			<option>ARCB</option>
+			<option>ARHB</option>
+			<option>ARPL</option>
+			<option>ARTS</option>
+			<option>ASMB</option>
+			<option>ASTB</option>
+			<option>ASTR</option>
+			<option>AUDT</option>
+			<option>BBS</option>
+			<option>BER</option>
+			<option>BICH</option>
+			<option>BINF</option>
+			<option>BIOB</option>
+			<option>BIOS</option>
+			<option>BIST</option><option>BMEN</option><option>BUEC</option><option>BUSI</option><option>CCLS</option><option>CEEM</option><option>CENB</option><option>CERC</option><option>CHEM</option><option>CHEN</option><option>CHMB</option><option>CJAZ</option><option>CLAS</option><option>CLSB</option><option>CMBS</option><option>CNED</option><option>COCI</option><option>COLL</option><option>COMS</option><option>CORE</option><option>CRWR</option><option>CSER</option><option>CSHR</option><option>CSOB</option><option>DANB</option><option>DEOS</option><option>DERM</option><option>DGLO</option><option>DROM</option><option>DVSP</option><option>EAEE</option><option>EALC</option><option>ECOB</option><option>ECON</option><option>EDNB</option><option>EDUC</option><option>EEEB</option><option>EESC</option><option>EHSC</option><option>EI</option><option>ELEN</option><option>EMED</option><option>EMPH</option><option>ENCL</option><option>ENGB</option><option>ENGI</option><option>ENSB</option><option>EPID</option><option>EVAL</option><option>EXEC</option><option>EXEP</option><option>FIEC</option><option>FILM</option><option>FINC</option><option>FLMB</option><option>FREN</option><option>FRNB</option><option>FRRP</option><option>FYSB</option><option>GEND</option><option>GERL</option><option>GEST</option><option>GNPH</option><option>GRMB</option><option>GSAS</option><option>HIST</option><option>HNUT</option><option>HPMN</option><option>HRTB</option><option>HSTB</option><option>HUMC</option><option>IDEP</option><option>IEOR</option><option>IIJS</option><option>INCT</option><option>INTA</option><option>ISRP</option><option>ITAL</option><option>ITLB</option><option>JOUR</option><option>JTSD</option><option>JUIL</option><option>KYTO</option><option>LATS</option><option>LAW</option><option>LCRS</option><option>LRC</option><option>MANG</option><option>MART</option><option>MATB</option><option>MATH</option><option>MECE</option><option>MEDI</option><option>MELC</option><option>MEUS</option><option>MGMT</option><option>MICR</option><option>MRKT</option><option>MRSB</option><option>MRST</option><option>MSOM</option><option>MUSB</option><option>MUSI</option><option>NBIO</option><option>NEUR</option><option>NEUS</option><option>NURS</option><option>NUSR</option><option>NWSC</option><option>NY14</option><option>NY57</option><option>NY93</option><option>OBSG</option><option>OPHT</option><option>ORTS</option><option>OTOL</option><option>PATH</option><option>PEDB</option><option>PEDI</option><option>PHAR</option><option>PHED</option><option>PHGH</option><option>PHIL</option><option>PHIT</option><option>PHLB</option><option>PHYB</option><option>PHYG</option><option>PHYS</option><option>PHYT</option><option>PLSB</option><option>POLS</option><option>POPF</option><option>PSCC</option><option>PSCY</option><option>PSYB</option><option>PSYC</option><option>PUBH</option><option>RADI</option><option>REGI</option><option>RELB</option><option>RELI</option><option>RHD</option><option>RMED</option><option>SCEN</option><option>SCPB</option><option>SHSP</option><option>SLAB</option><option>SLAL</option><option>SOCB</option><option>SOCI</option><option>SOCM</option><option>SOCW</option><option>SOSC</option><option>SPNB</option><option>SPPO</option><option>STAT</option><option>SURG</option><option>THDR</option><option>THEA</option><option>THEB</option><option>UBST</option><option>UROL</option><option>URSB</option><option>UTFE</option><option>UTSD</option><option>UWRT</option><option>VDEO</option><option>VIAR</option><option>WMST</option><option>WRIT</option><option>WSTB</option>
+		        </select>
+		<label>Role</label>
+		<select name="role" value="role">
+		    <option></option>
+		    <option>Enhanced TA</option><option>Staff Assistant</option><option>Teaching Assistant</option>
+		  </select>
+		<label>Term</label>
+		<select name="term" value="term" queryposition="below" style="width:130px">
+		    <option></option>
+		    <option value="20171">
+		      2017 Spring
+		    </option><option value="20163">
+		      2016 Fall  
+		    </option><option value="20162">
+		      2016 Summer
+		    </option><option value="20161">
+		      2016 Spring
+		    </option><option value="20153">
+		      2015 Fall  
+		    </option><option value="20152">
+		      2015 Summer
+		    </option><option value="20151">
+		      2015 Spring
+		    </option><option value="20143">
+		      2014 Fall  
+		    </option><option value="20142">
+		      2014 Summer
+		    </option><option value="20141">
+		      2014 Spring
+		    </option><option value="20133">
+		      2013 Fall  
+		    </option><option value="20132">
+		      2013 Summer
+		    </option><option value="20131">
+		      2013 Spring
+		    </option><option value="20123">
+		      2012 Fall  
+		    </option><option value="20122">
+		      2012 Summer
+		    </option><option value="20121">
+		      2012 Spring
+		    </option><option value="20113">
+		      2011 Fall  
+		    </option><option value="20112">
+		      2011 Summer
+		    </option><option value="20111">
+		      2011 Spring
+		    </option><option value="20103">
+		      2010 Fall  
+		    </option>
+		  </select>
+		<input type="submit">
+	</form>	
+        <button id="exportButton">Export to CSV</button>
+         
+	<div id="resultTable"></div>
+	</div>
+	 {% if tablehtml %}
+		<script>
+		 	document.getElementById("resultTable").innerHTML = {{ tablehtml|safe }};
+		</script>
+	 {% endif %}
+	<!--main panel end-->
+</div>
+</body>
+</html>
+
+

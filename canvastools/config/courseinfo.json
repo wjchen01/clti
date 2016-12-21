@@ -1,0 +1,13 @@
+{
+	"title": "Course Info",
+	"description": "Course information",
+	"launch_relative": "/courseinfo/launch",
+	"icon_relative": "/static/Simpleicons_Places_buildings.svg",
+	"oauth_consumer_key": "",
+	"oauth_consumer_secret": "",
+	"devid": "",
+	"devkey": "",
+	"visibility": "admins",
+	"main_route": "",
+	"db_id": 3
+}

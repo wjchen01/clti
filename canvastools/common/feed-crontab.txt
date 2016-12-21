@@ -1,0 +1,71 @@
+#
+#     *******  courseworks feed jobs *****
+
+#
+# run selected processing in the morning
+05 08 * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=morning_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+
+#
+# run selected processing in the evening
+05 20 * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=evening_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+
+#
+# update Law School Current Feed Process
+0 */4 * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=law_school_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+
+#
+# Current Canvas Roster Sync Feed Process
+#
+# every 15 minutes
+# */15 * * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=canvas_roster_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+30 10 * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=canvas_roster_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+30 22 * * * /usr/bin/perl /sakai/cw-scripts/feeds/run_scripts.pl --cfg-file=/sakai/cw-scripts/feeds/Config/Run_Suites.json --run-suite=canvas_roster_incremental 2> /sakai/cw-scripts/feeds/logs/run_scripts.err
+
+
+#
+# School Department
+# 00 21 * * * /usr/bin/perl /sakai/cw-scripts/school_dept/school_dept.pl 2>&1 > /sakai/cw-scripts/school_dept/logs/school_dept.log
+
+#
+#     *******  CourseWorks Facebook jobs *****
+#
+# See BZ 36951 for more information
+#
+30 7 * * * /p/sy/subsys/scripts/mailifoutput -s "PROD fetchunis photo_date" tlt-checkers /sakai/cw-scripts/facebook/facebook.pl --verbose --fetchunis
+45 7 * * * /p/sy/subsys/scripts/mailifoutput -s "PROD fetchunis_update photo_date" tlt-checkers /sakai/cw-scripts/facebook/facebook.pl --verbose --fetchunis_update
+00 8 * * * /p/sy/subsys/scripts/mailifoutput -s "PROD fetchpics photo_date" tlt-checkers /sakai/cw-scripts/facebook/facebook.pl --verbose --fetchpics
+
+#
+#    ******* Reports *******
+#
+# See BZ 36327 for more information
+#
+0 12 * * * /p/sy/subsys/scripts/mailifoutput -s "run-reports" tlt-checkers /sakai/cw-scripts/reports/run-reports
+
+#
+# Vergail
+15 7 * * * /p/sy/subsys/scripts/mailifoutput -s "CW - DOC json" tlt-checkers perl /sakai/cw-scripts/dataservice/web_doc2json.pl
+
+#
+# Book store
+30 8 * * * /p/sy/subsys/scripts/mailifoutput -s "CW - Book store" tlt-checkers perl /sakai/cw-scripts/dataservice/bookstore_feed.pl
+
+#
+# Sunday restart
+0 4 * * 0 /sakai/cw-scripts/restart/restart.sh 0 > /var/log/tcat/sakai/restart.$(hostname -s).log 2>&1
+
+#
+# Canvas Feed
+# morning feeds process
+00 10 * * * /usr/bin/perl /sakai/cw-scripts/canvas-feeds/doc_feeds.pl 2> /sakai/cw-scripts/canvas-feeds/logs/doc_feeds.err && /usr/bin/perl /sakai/cw-scripts/canvas-feeds/ldif_feeds.pl 2> /sakai/cw-scripts/canvas-feeds/logs/ldif_feeds.err && /usr/bin/perl /sakai/cw-scripts/canvas-feeds/submit_feeds.pl --incr 2> /sakai/cw-scripts/canvas-feeds/logs/submit_feeds.err
+# evening feeds process
+00 22 * * * /usr/bin/perl /sakai/cw-scripts/canvas-feeds/doc_feeds.pl 2> /sakai/cw-scripts/canvas-feeds/logs/doc_feeds.err && /usr/bin/perl /sakai/cw-scripts/canvas-feeds/ldif_feeds.pl 2> /sakai/cw-scripts/canvas-feeds/logs/ldif_feeds.err && /usr/bin/perl /sakai/cw-scripts/canvas-feeds/submit_feeds.pl --incr 2> /sakai/cw-scripts/canvas-feeds/logs/submit_feeds.err
+# enrollment catch up process
+00 23 * * * /usr/bin/perl /sakai/cw-scripts/canvas-feeds/submit_feeds.pl --curt --file=enrollments.csv 2> /sakai/cw-scripts/canvas-feeds/logs/submit_feeds.err
+
+#
+# Bedework
+#
+# Alumni Feeds
+30 08 * * * /usr/bin/perl /sakai/cw-scripts/bedework_feeds/scripts/alumni_feeds.pl 2> /sakai/cw-scripts/bedework_feeds/logs/alumni_feeds.err
+

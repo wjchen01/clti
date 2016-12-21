@@ -1,0 +1,13 @@
+{
+        "PREFERRED_URL_SCHEME": "https",
+        "SERVER_NAME":"https://tlaservicedev.cc.wjchen.org",
+        "canvas_uri":"https://wjchensce.test.instructure.com",
+        "dbserver":"canvasdevdb01",
+	"tool_suffix": "DEV"
+	"apps": [
+	 	"libreserves",
+		"researchguides",
+		"roster",
+		"submit"
+	]
+}

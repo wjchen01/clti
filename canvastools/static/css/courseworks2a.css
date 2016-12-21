@@ -1,0 +1,123 @@
+* {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.linkbuttontext {
+    font-size: 12px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.link {
+    text-decoration: none;
+    color: black;
+}
+.linkbutton {
+    width: 48px;
+}
+
+.rosterblock {
+/*
+    border: thin solid black;
+    display: block;
+    float: left;
+    padding: 5px;
+    margin: 5px;
+    height: 200px;
+    width: 250px;
+*/
+    margin: 0 auto;
+    width: 170px;
+}
+
+.namePanel {
+}
+
+.rosterinfo {
+    min-height: 7em;
+    padding: 10px;
+}
+
+.panelbg {
+    padding: 0;
+    margin-bottom: 20px;
+    border: thin solid rgb(221,221,221);
+}
+
+.thumbnail {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.nameCol {
+/*    margin-bottom: 20px; */
+    padding: 0;
+}
+
+.rosterimage {
+/*    margin: 0 10px; */
+
+    padding: 10px 5px;
+    min-width: 90px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.rosterpanel {
+    height: 150px;
+    overflow: hidden;
+}
+
+.cw-controls {
+    padding: 1em 0;
+}
+
+#exportCsv {
+    display: none;
+}
+
+#fcGame {
+    display: none;
+}
+
+#fcPhotoFrame {
+    padding: 10px;
+    height: 375px;
+    overflow: auto;
+}
+
+#fcPhoto {
+    max-height: 350px;
+}
+
+#fcSuccess {
+    display: none;
+}
+
+#fcInfo {
+    display: none;
+}
+
+#fcMissingP, #fcMissedIt, #fcGotIt {
+    display: none;
+}
+
+.canvasRole {
+    font-style: italic;
+}
+
+@media print {
+  /* Disables Bootstrap's link-printing */
+  a[href]:after {
+    content: none !important;
+  }
+}
+
+.row{
+    overflow: hidden; 
+}
+
+[class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}

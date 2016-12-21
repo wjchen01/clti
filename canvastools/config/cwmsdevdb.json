@@ -1,0 +1,7 @@
+{
+    "cx":{
+        "user":"REPLACE_WITH_DB_USERNAME",
+        "passwd":"REPLACE_WITH_DB_PASSWORD",
+        "db":"cwmsdevdb-ci.cc.wjchen.org:1521/cf101d.cc.wjchen.org"
+    }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><head>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/courseworks2.css" media="all" rel="stylesheet">
+<title>Feed status</title>
+</head><body>
+<div class="container">
+  <h1 class="page-header">Feed status for {{ param.date.strftime('%B %d, %Y') }}</h1>
+  <div class="jumbotron">
+    <h2 class="">
+      {% for ltype, ltn in param['ltypes'].items() %}
+      {{ ltype }} {{ ltn }}{% if loop.index < loop.length %}, {% endif %}
+					      {% endfor %}
+      </h2>
+    <div class="panel panel-warning">
+      <div class="panel-heading">Warnings</div>
+      <div class="panel-body">
+	<ul>{% for warn in param['warn'] %}
+	  <li>{{ warn.time }}: {{ warn.msg }}</li>
+	  {% endfor %}</ul>
+      </div>
+    </div>
+    {% for id in param['entries'] %}
+    <div class="panel {% if info[id].STATUS == 'ERROR' %}
+		panel-danger
+		{% elif info[id].STATUS == 'WARN' %} panel-warning
+		{% else %} panel-success {% endif %}">
+      <div class="panel-heading">{{ info[id].time }}
+	{{ id }}: {{ info[id].STATUS }}</div>
+      <div class="panel-body">{{ info[id].DETAIL }}</div>
+      <div class="panel-footer">{{ info[id].TASK }}</div>
+    </div>
+    {% endfor %}
+  </div>
+<script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>

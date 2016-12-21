@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head>
+</head><body>
+<div style="padding: 1em;">
+<h2>Research guides test page</h2>
+<iframe style="border: thin solid black; width: 90%; height: 20em;" name="inframe"><p>Tool will appear here</p></iframe>
+
+<form method="POST" target="inframe" action="{{ param['frame_absolute'] }}">
+<div>
+{% for d in do %}
+<div>
+  <label for="{{ d }}">{{ d }}</label>
+  <input type="text" name="{{ d }}" size="20" value="{{ do[d] }}"></input>
+</div>
+{% endfor %}
+<button type="submit">Submit</button>
+</form>
+</div>
+</body>
+</html>

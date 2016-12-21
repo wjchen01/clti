@@ -1,0 +1,7 @@
+{
+	"title": "Research Guide",
+	"description": "Research Guide",
+	"launch_relative": "/researchguides/launch",
+	"icon_relative": "/static/Pictograms-nps-services-library-2.svg",
+	"visibility": "public"
+}

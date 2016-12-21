@@ -1,0 +1,7 @@
+{
+	"rootpath":"/var/www/html/tlaservice-web/canvastools/",
+	"configpath":"/var/www/html/tlaservice-web/canvastools/config",
+	"provider_uri":"https://tlaservicedev.cc.wjchen.org",
+	"server_uri":"https://wjchensce.test.instructure.com",
+	"dbserver":"canvasdevdb01"
+}

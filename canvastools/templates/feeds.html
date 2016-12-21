@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/courseworks2.css" media="all" rel="stylesheet">
+    <title>TLA Feed Status</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="page-header">TLA Feed Status</h2>
+      <div class="panel-group" id="jobAccordion" role="tablist"
+	   aria-multiselectable="true">
+	{% for job in param.jobs %}
+	<div class="panel panel-default">
+	  <div class="panel-heading row" role="tab" id="heading{{ loop.index0 }}" data-toggle="collapse" data-parent="#jobAccordion" href="#collapse{{ loop.index0 }}">
+	    {% if job.healthReport is iterable and job.healthReport|length > 0 %}
+	    <div class="col-md-1 col-sm-1">
+	      <img src="{{ param.jurl }}{{ param.imageurl }}32x32/{{
+			job.healthReport[0]['iconUrl']
+			}}" />
+	    </div>
+	    <div class="col-md-3 col-sm-3" id="5last{{ loop.index0 }}"></div>
+	    <div class="col-md-8 col-sm-8 col-xs-8">
+	      <p class="panel-title"><b>{{ job.displayName }}
+		  <span id="sched{{ loop.index0 }}"></span>
+	      </b></p>
+	      <p>
+		<span class="glyphicon glyphicon-triangle-bottom" id="tri{{ loop.index0 }}" aria-hidden="true"></span>
+		{{ job.healthReport[0]['description'][17:] }}
+		{% if job.lastBuild %}
+		Last build: #{{ job.lastBuild.number }}
+		<span id="last{{ loop.index0 }}"></span>
+		{{ job.lastBuild.result }}
+	      </p>
+	      {% endif %}
+	    </div>
+	    {% else %}
+	    <p><b>{{ job.displayName }}</b></p>
+	    {% endif %}
+	  </div>
+	  <div id="collapse{{ loop.index0 }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{ loop.index0 }}">
+	    <div id="info{{ loop.index0 }}" class="panel-body">
+	    </div>
+	  </div>
+	</div>
+	{% endfor %}
+      </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalConsole">
+      <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	    <h4 class="modal-title">
+	      <span id="jobTitle">Console output for</span> job <span id="modalJobNum">0</span>
+	    </h4>
+	  </div>
+	  <div class="modal-body pre-scrollable" id="bodyConsole">
+	  </div>
+	</div>
+      </div>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+
+var jurl = '{{ param.jurl }}';
+
+var jobs = [{% for job in param.jobs %}
+  "{{ job.name |urlencode }}"{% if not loop.last %},{% endif %}
+{% endfor %} ];
+
+showConsole = function(jobName, id) {
+  var url = "/dash/console/" + encodeURIComponent(jobName) + "/" + id
+  console.info(url);
+  var res = $.get(url).done( function(data) {
+    $("#bodyConsole").html("<pre>" + data + "</pre>");
+    $("#jobTitle").text(jobName);
+    $("#modalJobNum").text(id);
+  }).fail( function(data, status, error) {
+    console.error("Unable to fetch console output: " + error);
+  });
+
+};
+
+getjob = function(jobName, index) {
+  joburl = '/dash/job/' + jobName + '?ajax=False';
+  console.info(joburl);
+  // TODO fetch job html
+  var res = $.getJSON(joburl).done( function(data) {
+    $("#info" + index).html($('<textarea />').html(data.list).text());
+    $("#5last" + index).append($('<textarea />').html(data.icons).text());
+    $("#last" + index).html(" on " + data.lastBuild);
+    if (data.sched.length > 0) {
+      $("#sched" + index).html("(" + data.sched + ")");
+    } else {
+      $("#sched" + index).html("(No schedule)");
+    }
+  }).fail( function(data, status, error) {
+    console.error("Unable to fetch job info: " + error);
+  });
+
+};
+
+{% for i in range(0, param.jobs|length) %}
+$('#collapse{{ i }}').on('show.bs.collapse', function() {
+  $('#tri{{ i }}').addClass('glyphicon-triangle-top').removeClass('glyphicon-triangle-bottom');
+});
+
+$('#collapse{{ i }}').on('hidden.bs.collapse', function() {
+  $('#tri{{ i }}').addClass('glyphicon-triangle-bottom').removeClass('glyphicon-triangle-top');
+});
+
+{% endfor %}
+
+$(document).ready( function() {
+  for (i=0; i < jobs.length; i++) {
+    getjob(jobs[i], i);
+  }
+});
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+	"title": "Photo Roster",
+	"description": "Photo roster for instructors",
+	"launch_relative": "/roster/launch",
+	"icon_relative": "/static/roster.png",
+	"visibility": "admin",
+	"oauth_consumer_key": "REPLACE",
+	"oauth_consumer_secret": "REPLACE",
+	"devid": "REPLACE",
+	"devkey": "REPLACE",
+	"main_route": "grid",
+	"db_id": 1
+}

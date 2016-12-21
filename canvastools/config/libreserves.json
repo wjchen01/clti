@@ -1,0 +1,7 @@
+{
+	"title": "Library Reserves",
+	"description": "Redirect to library reserves list",
+	"launch_relative": "/libreserves/launch",
+	"icon_relative": "/static/Pictograms-nps-services-library-2.svg",
+	"visibility": "public"
+}

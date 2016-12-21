@@ -1,0 +1,660 @@
+<link rel="stylesheet" href="/static/css/qunit-2.0.1.css" />
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="/static/js/qunit-2.0.1.js"></script>
+<script>
+var testStudents = [{% for u in param.users %} "{{ u.sis_user_id }}"{% if loop.index0 < param.users|length %}, {% endif %}{% endfor %}];
+
+var testSuccess = ['.bg-success', '.success'];
+var testNotSelect = ['.thumbnail', 'tr:not(.success)'];
+var testNameNode = ['.nameCol', '.nameRow'];
+var testIdPrefix = ['#photo_', '#lists_'];
+var testSep = [' ', ', '];
+var testNode = ['div', 'tr'];
+var listView = 0;
+
+// Take a sample if there are more than a certain number of students
+var sampleSize = 10;
+console.log("Testing with sample size of " + sampleSize);
+var sampleStudents = [];
+var copyStudents = testStudents.slice(0);
+if (testStudents.length > sampleSize) {
+  for (i=0; i < sampleSize; i++) {
+    var j = -1;
+    j = Math.floor(Math.random() * copyStudents.length);
+    addUni = copyStudents[j];
+    sampleStudents.push(addUni);
+    copyStudents.splice(j, 1);
+  }
+} else {
+  sampleStudents = testStudents;
+}
+
+// Figure out which students have missing photos
+var testToDisplay = [];
+var testMissing = [];
+
+for (var j=0; j < testStudents.length; j++) {
+  var stud = testStudents[j];
+  if (users[stud]['fbpath'] == "/var/www/html/tlaservice-web/canvastools/static") {
+    testMissing.push(stud);
+  } else {
+    testToDisplay.push(stud);
+  }
+}
+
+QUnit.test("Are there missing photos we can use to test the flash card app?",
+  function(assert) {
+  assert.ok(testMissing.length > 0, "We have at least one student with a missing photo");
+});
+
+var testNumStudents = {{ param.users|length }};
+
+var testString = function(user) {
+  return user['short_name'].replace(/[ .]/g, '_').replace(/'/g, '’') + '_' + user['sis_user_id'];
+};
+
+QUnit.test(
+  "Are there photos or placeholders for all students?",
+  function(assert) {
+  assert.equal(
+    $('.nameCol').length,
+    testNumStudents,
+    testNumStudents + " users"
+  );
+  // for this we do not want a sample
+  for (i=0; i < testStudents.length; i++) {
+    var s = testStudents[i];
+    assert.ok( s in users, s + " exists");
+    var u = users[s];
+    var testFilter = testString(u);
+    assert.notEqual($('#photo_' + testFilter).length, 0, "Photo for " + s)
+    assert.notEqual($('#lists_' + testFilter).length, 0, "Row for " + s)
+  }
+  console.log("Done photos for all");
+});
+
+QUnit.test(
+  "Are there list entries for all students?", function(assert) {
+  assert.equal(
+    $('.nameRow').length,
+    testNumStudents,
+    testNumStudents + " users"
+  );
+  console.log("Done list entries for all");
+});
+
+QUnit.test('Are the names and UNIs hidden when the Hide Names button is clicked?', function (assert) {
+  $('#toggleNames').trigger( $.Event('click'));
+  for (i=0; i < testStudents.length; i++) {
+    var s = testStudents[i];
+    assert.equal(
+      $('#photo_'+testString(users[s])+' .rosterinfo')[0].style.visibility,
+      'hidden',
+      s + " hidden"
+   );
+
+  }
+  $('#toggleNames').trigger( $.Event('click'));
+  console.log("Done hideNames");
+});
+
+QUnit.test("List and photo visibility", function(assert) {
+  console.log("Starting visibility");
+  assert.equal(
+    $('#gridDiv').css('display'), 'block', "Grid displayed on load"
+  );
+  assert.equal($('#tableDiv').css('display'), 'none', "Table hidden on load");
+  assert.equal(
+    $('#fcDiv').css('display'), 'none', "Flash cards hidden on load"
+  );
+  assert.equal(
+    $('.nameCol').length, testNumStudents, "Are all students there?"
+  );
+  assert.equal($('.nameCol').filter(':hidden').length, 0, "Are none hidden?");
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    "#studentsNum shows total number of students"
+  );
+  assert.equal($('.bg-success').length, 0, "No students have bg-success");
+  assert.equal(
+    $("div[aria-label='Selected']").length,
+    0,
+    "No students are labeled 'Selected'"
+  );
+
+  // Click on tabs and check
+  $('[aria-controls="list"]').trigger( $.Event('click') );
+  assert.equal(
+    $('#gridDiv').css('display'), 'none', "Grid hidden after list clicked"
+  );
+  assert.equal($('#tableDiv').css('display'), 'block', "Table visible");
+  assert.equal(
+    $('#fcDiv').css('display'), 'none', "Flash cards hidden"
+  );
+  assert.equal(
+    $('.nameRow').length, testNumStudents, "Are all students there?"
+  );
+  assert.equal($('.nameRow').filter(':hidden').length, 0, "Are none hidden?");
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    "#studentsNum shows total number of students"
+  );
+  assert.equal($('.success').length, 0, "No students have success");
+  assert.equal(
+    $("tr[aria-label='Selected']").length,
+    0,
+    "No students are labeled 'Selected'"
+  );
+
+  // Back to photos
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+  assert.equal(
+    $('#tableDiv').css('display'), 'none', "List hidden after photos clicked"
+  );
+  assert.equal($('#gridDiv').css('display'), 'block', "Photos visible");
+  assert.equal(
+    $('#fcDiv').css('display'), 'none', "Flash cards hidden"
+  );
+  assert.equal(
+    $('.nameCol').length, testNumStudents, "Are all students there?"
+  );
+  assert.equal($('.nameCol').filter(':hidden').length, 0, "Are none hidden?");
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    "#studentsNum shows total number of students"
+  );
+  assert.equal($('.bg-success').length, 0, "No students have success");
+  assert.equal(
+    $("div[aria-label='Selected']").length,
+    0,
+    "No students are labeled 'Selected'"
+  );
+  console.log("Done visibility");
+});
+
+QUnit.test(
+  "Does the text filter work for first name, last name and UNI?",
+  function(assert) {
+  $('#find').focus();
+
+  for (i=0; i < sampleStudents.length; i++) {
+    var s = sampleStudents[i];
+    var u = users[s];
+    var testNumFound = 0;
+    var nameArray = u['sortable_name'].toLowerCase().split(', ');
+    nameArray.push(u['sis_user_id']);
+    for (var j=0; j< nameArray.length; j++) {
+       var testFound = false;
+       var testSubstring = '';
+       var testName = nameArray[j].replace(/'/g, '’').replace(/\s/g, '_');
+       for (var k=0; k < nameArray[j].length; k++) {
+         testSubstring = nameArray[j].substring(0,k+1);
+         $('#find').val(testSubstring);
+         $('#find').trigger( $.Event('input'));
+         testNumFound = $(testSuccess[listView]).length;
+         assert.equal(
+           $('#studentsNum')[0].innerText,
+           testNumFound,
+           testSubstring + ': ' + testNumFound + ' appears in #studentsNum (listView = ' + listView + ', displayList = ' + displayList + ')'
+         );
+         if (testNumFound == 1 || k == nameArray[j].length-1) {
+           var testFindString = testIdPrefix[listView] + testString(u) + testSep[listView] + testSuccess[listView];
+           if ($(testFindString).length > 0) {
+             testFound = true;
+             break;
+           }
+         } else {
+           // Switch to list or back
+           if (listView > 0) {
+	     $('[aria-controls="photos"]').trigger( $.Event('click') );
+             listView = 0;
+           } else {
+             $('[aria-controls="list"]').trigger( $.Event('click') );
+             listView = 1;
+           }
+           testNumFound = $(testSuccess[listView]).length;
+         }
+       }
+       assert.ok(testFound, nameArray[j] + ' found with ' + testSubstring);
+
+       // Does it show all (and update #studentsNum)
+       // when "hide non-matching" is unchecked?
+       $('#hideNonInput').trigger ($.Event('click'));
+       assert.equal(
+         $(testSuccess[listView]).length,
+         testNumFound,
+         "Highlighted students remains the same"
+       );
+       assert.equal(
+         $(testNameNode[listView]).filter(':hidden').length,
+         0,
+         "No students are hidden"
+       );
+       assert.equal(
+         $(testNameNode[listView]).length,
+         testNumStudents,
+         "All students have photos"
+       );
+       assert.equal(
+         $('#studentsNum')[0].innerText,
+         testNumStudents,
+         "#studentsNum shows all students"
+       );
+       assert.equal(
+         $(testNode[listView] + "[aria-label='Selected']").length,
+         testNumFound,
+         "Highlighted students have an aria-label of 'Selected'"
+       );
+
+
+       $('#hideNonInput').trigger ($.Event('click'));
+
+       // Does it show the expected numbers when "hide non-matching"
+       // is checked again?
+       assert.equal(
+         $(testSuccess[listView]).length,
+         testNumFound,
+        "Highlighted students remains the same"
+       );
+       var notListView = listView == 1 ? 0 : 1;
+       assert.equal(
+         $(testSuccess[notListView]).length,
+         0,
+        "No highlighted students in old view"
+       );
+       assert.equal(
+         $(testNameNode[listView]).filter(':hidden').length,
+         testNumStudents - testNumFound,
+         "Students who are not found are hidden"
+       );
+       assert.equal(
+         $(testNameNode[listView]).length,
+         testNumStudents,
+         "All students have photos"
+       );
+       assert.equal(
+         $('#studentsNum')[0].innerText,
+         testNumFound,
+         "#studentsNum shows number of students found"
+       );
+       assert.equal(
+         $(testNode[listView] + "[aria-label='Selected']").length,
+         testNumFound,
+         "Highlighted students have an aria-label of 'Selected'"
+       );
+    }
+  }
+
+  // When the user clears the input, does it show all?
+  $('#find').val('');
+  $('#find').trigger( $.Event('input'));
+
+  assert.equal(
+    $(testNameNode[listView]).length, testNumStudents, "Are all students there?"
+  );
+  assert.equal(
+    $(testNameNode[listView]).filter(':hidden').length, 0, "Are none hidden?"
+  );
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    "#studentsNum shows all students"
+  );
+  assert.equal(
+    $(testSuccess[listView]).length, 0, "No students have bg-success"
+  );
+  assert.equal(
+    $(testNode[listView] + "[aria-label='Selected']").length,
+    0,
+    "No students are labeled 'Selected'"
+  );
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+  console.log("Done name filter");
+});
+
+
+QUnit.test("Does the group filter show all and only group members",
+  function(assert) {
+  assert.ok ({{ param.groups|length }} > 0, "Does this course have groups we can test?");
+  var testNumFound = $(testSuccess[listView]).length;
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    'No group: ' + testNumFound + ' appears in #studentsNum'
+  );
+  for (var id in groups) {
+    group = groups[id];
+    $('#groupMenu').val('group' + id);
+    $('#groupMenu').trigger( $.Event('change'));
+    testNumFound = $(testSuccess[listView]).length;
+    assert.equal(
+      $('#studentsNum')[0].innerText,
+      testNumFound,
+      group['name'] + ': ' + testNumFound + ' appears in #studentsNum (listView = ' + listView + ', displayList = ' + displayList + ')'
+    );
+    $(testSuccess[listView] + ' .profilelink').each( function (index) {
+      assert.ok(
+        group['members'].indexOf(this.text.trim()) >= 0,
+        this.text.trim() + " found in group " + group['name']
+      );
+    });
+    $(testNotSelect[listView] + ' .profilelink').each( function (index) {
+      assert.ok(
+        group['members'].indexOf(this.text) < 0,
+        this.text + " not found in group " + group['name'] + ": " + group['members'] + ' (testNotSelect[' + listView + '] = ' + testNotSelect[listView] + ')'
+      );
+    });
+
+    // Does it show all (and update #studentsNum)
+    // when "hide non-matching" is unchecked?
+    $('#hideNonInput').trigger ($.Event('click'));
+    assert.equal(
+      $(testSuccess[listView]).length,
+      testNumFound,
+      "Highlighted students remains the same"
+    );
+    assert.equal(
+      $(testNameNode[listView]).filter(':hidden').length,
+      0,
+      "No students are hidden"
+    );
+    assert.equal(
+      $(testNameNode[listView]).length,
+      testNumStudents,
+      "All students have photos"
+    );
+    assert.equal(
+      $('#studentsNum')[0].innerText,
+      testNumStudents,
+      "#studentsNum shows all students"
+    );
+    assert.equal(
+      $(testNode[listView] + "[aria-label='Selected']").length,
+      testNumFound,
+      "Highlighted students have an aria-label of 'Selected'"
+    );
+
+    $('#hideNonInput').trigger ($.Event('click'));
+
+    // Does it show the expected numbers when "hide non-matching"
+    // is checked again?
+    assert.equal(
+      $(testSuccess[listView]).length,
+      testNumFound,
+      "Highlighted students remains the same"
+    );
+    assert.equal(
+      $(testNameNode[listView]).filter(':hidden').length,
+      testNumStudents - testNumFound,
+      "Students who are not found are hidden"
+    );
+       assert.equal($(testNameNode[listView]).length, testNumStudents, "All students have photos");
+       assert.equal($('#studentsNum')[0].innerText, testNumFound, "#studentsNum shows number of students found");
+       assert.equal($(testNode[listView] + "[aria-label='Selected']").length, testNumFound, "Highlighted students have an aria-label of 'Selected'");
+
+       // Switch to list or back
+       if (listView > 0) {
+         $('[aria-controls="photos"]').trigger( $.Event('click') );
+         listView = 0;
+       } else {
+         $('[aria-controls="list"]').trigger( $.Event('click') );
+         listView = 1;
+       }
+  }
+  // When the user clears the input, does it show all?
+  $('#groupMenu').val('filternone');
+  $('#groupMenu').trigger( $.Event('change'));
+  assert.equal(
+    $(testNameNode[listView]).length, testNumStudents, "Are all students there?"
+  );
+  assert.equal($(testNameNode[listView]).filter(':hidden').length, 0, "Are none hidden?");
+  assert.equal(
+    $('#studentsNum')[0].innerText,
+    testNumStudents,
+    "#studentsNum shows all students"
+  );
+  assert.equal($(testSuccess[listView]).length, 0, "No students have bg-success");
+  assert.equal(
+    $(testNode[listView] + "[aria-label='Selected']").length,
+    0,
+   "No students are labeled 'Selected'"
+  );
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+  console.log("Done groups");
+});
+
+
+// Flash cards:
+
+QUnit.test("Does it display photo without name or UNI?", function(assert) {
+  $('[aria-controls="flashcards"]').trigger( $.Event('click') );
+  $('#beginButton').trigger( $.Event('click') );
+  assert.ok( $('#fcInfo').is(":hidden"), "Info (name and UNI) is hidden");
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+
+  console.log("Done flashcards without name and UNI");    
+});
+
+
+QUnit.test("Does it not display flash cards for students without photos?", function(assert) {
+  var hasMore = true;
+  var displayed = [];
+  var keyToggle = 0;
+  $('[aria-controls="flashcards"]').trigger( $.Event('click') );
+  $('#beginButton').trigger( $.Event('click') );
+  while ($('#fcShowName').is(':visible')) {
+    if (keyToggle) {
+      $(document).trigger( $.Event('keypress', { key : ' ' } ));
+    } else {
+      $('#fcShowName').trigger( $.Event('click') );
+    }
+    keyToggle = keyToggle = 1 ? 0 : 1;
+    var nameParts = $('#fcInfo').html().split('<br>');
+    displayed.push(nameParts[1]);
+    assert.ok(
+      testToDisplay.indexOf(nameParts[1]) > -1,
+      "Displayed photo of " + nameParts[1] + " is in student list"
+    );
+    var imgSrc = $('#fcPhoto').attr('src');
+    assert.equal(
+      nameParts[1],
+      imgSrc.substring(imgSrc.lastIndexOf('/')+1, imgSrc.length-4),
+      "Image URL matches the displayed UNI"
+    );
+
+    assert.equal(
+      nameParts[0],
+      users[nameParts[1]]['short_name'],
+      "Name displayed matches short_name associated with uni displayed"
+    );
+
+    if (keyToggle) {
+      $(document).trigger( $.Event('keypress', { key : 'y' } ));
+    } else {
+      $('#fcGotIt').trigger( $.Event('click') );
+    }
+    keyToggle = keyToggle = 1 ? 0 : 1;
+    assert.equal(
+      displayed.length,
+      $('#fcCorrect').text(),
+      "#fcCorrect updates with total 'Got It' clicks"
+    );
+  }
+  assert.equal(
+    displayed.length,
+    testToDisplay.length,
+    "Displayed the right number of students"
+  );
+
+  for (var i=0; i < testMissing.length; i++) {
+    assert.equal(
+      displayed.indexOf(testMissing[i]),
+      -1,
+      "Placeholder for missing photo of " +testMissing[i]+ " is not displayed"
+    );
+  }
+
+  displayed = displayed.sort();
+  var dups = 0;
+  for (var i=0; i < displayed.length; i++) {
+    if (displayed[i+1] == displayed[i]) {
+      dups++;
+    }
+  }
+  assert.equal(dups, 0,
+    "No duplicates shown when user clicks 'Got it!' for all"
+  );
+
+
+  $('[aria-controls="list"]').trigger( $.Event('click') );
+  assert.equal(
+    $('#gridDiv').css('display'),
+    'none',
+    "Grid displayed after 'photo' clicked"
+  );
+  assert.equal(
+    $('#tableDiv').css('display'),
+    'block',
+    "Table hidden on after 'photo' clicked"
+  );
+  assert.equal(
+    $('#fcDiv').css('display'),
+    'none', "Flash cards hidden after 'photo' clicked"
+  );
+  console.log("Done flashcards all and only students with photos");    
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+});
+
+QUnit.test("Clicking 'Missed it' and 'Restart'", function(assert) {
+  var keyToggle = 0;
+  var totalMissed = 0;
+  var restartDenom = 20;
+  if (testStudents.length > 100) {
+    restartDenom = Math.floor(testStudents.length * 2);
+  } else if (testStudents.length < 100) {
+    restartDenom = testStudents.length;
+  }
+  console.log("restartDenom = " + restartDenom);
+  $('[aria-controls="flashcards"]').trigger( $.Event('click') );
+  $('#beginButton').trigger( $.Event('click') );
+  console.log("Begin clicking 'Missed it' and 'Restart'");
+  while ($('#fcShowName').is(':visible')) {
+    // One time out of ten click "Restart" without looking at name
+    console.log(Math.floor(Math.random() * restartDenom));
+    if (Math.floor(Math.random() * restartDenom) == 0) {
+      console.log("  Restart (before name, one time out of " + restartDenom + ")!");
+      if (keyToggle) {
+        $(document).trigger( $.Event('keypress', { key : 'r' } ));
+      } else {
+        $('#fcRestart').trigger( $.Event('click') );
+      }
+      keyToggle = keyToggle = 1 ? 0 : 1;
+
+      assert.equal(
+        $('#fcCorrect').text(),
+        0,
+        "Does the 'Restart' button (without looking at name) reset correct total to zero?"
+      );
+      assert.equal(
+        $('#fcMissed').text(),
+        0,
+        "Does the 'Restart' button (without looking at name) reset missed total to zero?"
+      );
+      totalMissed = 0;
+    }
+
+    if (keyToggle) {
+      $(document).trigger( $.Event('keypress', { key : ' ' } ));
+    } else {
+      $('#fcShowName').trigger( $.Event('click') );
+    }
+    keyToggle = keyToggle = 1 ? 0 : 1;
+
+    var nameParts = $('#fcInfo').html().split('<br>');
+
+    // One time out of three click "Missed it"
+    if (Math.floor(Math.random() * 3) == 0) {
+
+      var oldCorrect = $('#fcCorrect').text();
+
+      if (keyToggle) {
+        $(document).trigger( $.Event('keypress', { key : 'n' } ));
+      } else {
+        $('#fcMissedIt').trigger( $.Event('click') );
+      }
+      keyToggle = keyToggle = 1 ? 0 : 1;
+      totalMissed++;
+
+      assert.notEqual(
+        testToDisplay.indexOf(nameParts[1]),
+        -1,
+       "When the user clicks 'Missed it,' is the student " + nameParts[1] + " preserved in the queue?"
+      );
+
+      assert.equal(
+        $('#fcMissed').text(),
+        totalMissed,
+        "When the user clicks 'Missed it,' is the missed total updated?"
+      );
+
+      assert.equal(
+        $('#fcCorrect').text(),
+        oldCorrect,
+        "When the user clicks 'Missed it,' is the correct total NOT updated?"
+      );
+    }
+
+    // One time out of ten click "Restart" while looking at name
+    if (Math.floor(Math.random() * restartDenom) == 0) {    
+      console.log("  Restart (after name)!");
+      if (keyToggle) {
+        $(document).trigger( $.Event('keypress', { key : 'r' } ));
+      } else {
+        $('#fcRestart').trigger( $.Event('click') );
+      }
+      keyToggle = keyToggle = 1 ? 0 : 1;
+
+      assert.equal(
+        $('#fcCorrect').text(),
+        0,
+        "Does the 'Restart' button (while looking at name) reset correct total to zero?"
+      );
+      assert.equal(
+        $('#fcMissed').text(),
+        0,
+        "Does the 'Restart' button (while looking at name) reset missed total to zero?"
+      );
+      totalMissed = 0;
+    }
+
+    if (keyToggle) {
+      $(document).trigger( $.Event('keypress', { key : 'y' } ));
+    } else {
+      $('#fcGotIt').trigger( $.Event('click') );
+    }
+    keyToggle = keyToggle = 1 ? 0 : 1;
+  }
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+  assert.equal(
+    $('#gridDiv').css('display'),
+    'block',
+    "Grid displayed after 'photo' clicked"
+  );
+  assert.equal(
+    $('#tableDiv').css('display'),
+    'none',
+    "Table hidden on after 'photo' clicked"
+  );
+  assert.equal(
+    $('#fcDiv').css('display'),
+    'none', "Flash cards hidden after 'photo' clicked"
+  );
+  console.log("Done with 'Missed it' in flash cards");
+  $('[aria-controls="photos"]').trigger( $.Event('click') );
+});
+
+</script>

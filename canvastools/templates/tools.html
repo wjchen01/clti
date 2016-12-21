@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/courseworks2.css" media="all" rel="stylesheet">
+<title>LTI tools by Columbia Teaching and Learning Applications</title>
+</head><body>
+<div class="container">
+  <h2>LTI tools by Columbia Teaching and Learning Applications</h2>
+  <ul class="list-group">
+    {% for tool, config in param.config|dictsort %}
+    <li class="list-group-item row">
+      <div class="col-md-1 col-sm-1 col-xs-1">
+	{% if config.icon_relative %}
+	<img src="{{ param.server_url }}{{ config.icon_relative }}" class="img-responsive" />
+	{% elif config.icon_absolute %}
+	<img src="{{ config.icon_absolute }}" class="img-responsive" />
+	{% endif %}
+	</div>
+      <div class="col-md-3 col-sm-5 col-xs-5">
+	<h4><a href="{{ param.server_url}}{{ config.launch_relative }}" target="_blank">{{ config.description }}</a></h4>
+      </div>
+      <div class="col-md-8 col-sm-6 col-xs-6">
+	<p>
+	  {% if config.oauth_consumer_key %}
+	  <b>Key</b>: {{ config.oauth_consumer_key }}<br />
+	  <b>Secret</b>: {{ config.oauth_consumer_secret }}<br />
+	  {% endif %}
+	  <b>Visibility</b>: {{ config.visibility }}<br />
+	  <a href="{{ param.server_url}}/{{ tool }}.xml" target="_blank">LTI XML</a>
+	</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>

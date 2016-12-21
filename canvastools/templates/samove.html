@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html><head>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/courseworks2.css" media="all" rel="stylesheet">
+<title>Sub-account Move</title>
+</head><body>
+<div class="container">
+<h3>Columbia University Teaching and Learning Admin Tools</h3>
+<h4>Sub-account Move</h4>
+<p>Welcome, <b>{{ param.uni }}</b>! Which courses would you like to move?</p>
+
+<p>Please insert a </p>
+<div class="row">
+  <form>
+  <div class="col-md-6 form-group">
+    <label for="courses">Courses</label>
+    <textarea class="form-control" id="courses" rows="5"></textarea>
+  </div>
+  <div class="col-md-6">
+    <label for="destination">Destination subaccount</label>
+    <select class="form-control">
+      <option>Columbia University</option>
+      <option>Fu Foundation School of Engineering and Applied Science</option>
+      <option>Video Network</option>
+      <option>Interfaculty</option>
+      <option>Bulk Migration Courses</option>
+    </select>
+  </div>
+</div>
+</div>
+<script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>

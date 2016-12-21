@@ -1,0 +1,8 @@
+{
+	"libpath":"",
+	"rootpath":"",
+	"configpath":"",
+	"provider_uri":"https://tlaservicedev.cc.wjchen.org",
+	"server_uri":"https://wjchensce.test.instructure.com",
+	"dbserver":"canvasdevdb01"
+}

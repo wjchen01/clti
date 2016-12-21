@@ -1,0 +1,7 @@
+{
+    "cx":{
+        "user":"REPLACE_WITH_SAKAI_USERNAME",
+        "passwd":"REPLACE_WITH_SAKAI_PASSWORD",
+        "db":"sakaidbdev-ci.cc.wjchen.org:1522/sakai1d.cc.wjchen.org"
+    }
+}
